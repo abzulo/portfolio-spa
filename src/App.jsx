@@ -6,7 +6,7 @@ import SearchBar from './components/SearchBar';
 import ProjectList from './components/ProjectList';
 
 function App() {
-  // Pre-filled sample projects
+  // Sample projects
   const [projects, setProjects] = useState([
     {
       title: 'Creative Agency Website',
@@ -27,6 +27,36 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Add new project
   const addProject = (project) => {
-    // Add a placeholder image if none is provided
+    const newProject = {
+      ...project,
+      image:
+        project.image ||
+        'https://via.placeholder.com/400x250?text=New+Project',
+    };
 
+    setProjects([newProject, ...projects]);
+  };
+
+  // Search filter
+  const filteredProjects = projects.filter((project) =>
+    project.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div>
+      <Header />
+
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
+      <ProjectForm addProject={addProject} />
+
+      <ProjectList projects={filteredProjects} />
+
+      <Footer />
+    </div>
+  );
+}
+
+export default App;
