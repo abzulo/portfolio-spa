@@ -1,39 +1,30 @@
-import React, { useState } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import ProjectForm from './components/ProjectForm';
-import SearchBar from './components/SearchBar';
-import ProjectList from './components/ProjectList';
+import { useState, useEffect } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import ProjectForm from "./components/ProjectForm";
+import ProjectList from "./components/ProjectList";
+import SearchBar from "./components/SearchBar";
+import "./App.css";
 
 function App() {
-  // Sample projects
-  const [projects, setProjects] = useState([
-    {
-      title: 'Creative Agency Website',
-      description: 'A modern responsive site built for a creative agency.',
-      image: 'https://via.placeholder.com/400x250?text=Creative+Agency',
-    },
-    {
-      title: 'Portfolio Redesign',
-      description: 'Redesigned a personal portfolio with React and CSS Grid.',
-      image: 'https://via.placeholder.com/400x250?text=Portfolio+Redesign',
-    },
-    {
-      title: 'E-commerce App',
-      description: 'A full-stack e-commerce app using React and Node.js.',
-      image: 'https://via.placeholder.com/400x250?text=E-commerce+App',
-    },
-  ]);
+  // Load projects from localStorage on first render
+  const [projects, setProjects] = useState(() => {
+    const savedProjects = localStorage.getItem("projects");
+    return savedProjects ? JSON.parse(savedProjects) : [];
+  });
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Save projects to localStorage whenever projects change
+  useEffect(() => {
+    localStorage.setItem("projects", JSON.stringify(projects));
+  }, [projects]);
 
   // Add new project
   const addProject = (project) => {
     const newProject = {
+      id: Date.now(),
       ...project,
-      image:
-        project.image ||
-        'https://via.placeholder.com/400x250?text=New+Project',
     };
 
     setProjects([newProject, ...projects]);
@@ -45,10 +36,13 @@ function App() {
   );
 
   return (
-    <div>
+    <div className="app">
       <Header />
 
-      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <SearchBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
 
       <ProjectForm addProject={addProject} />
 
